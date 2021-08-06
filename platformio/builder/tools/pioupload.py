@@ -26,7 +26,7 @@ from SCons.Script import ARGUMENTS  # pylint: disable=import-error
 from serial import Serial, SerialException
 
 from platformio import exception, fs, util
-from platformio.compat import IS_WINDOWS
+from platformio.compat import IS_WINDOWS, IS_MACOS
 from platformio.proc import exec_command
 
 # pylint: disable=unused-argument
@@ -136,6 +136,8 @@ def AutodetectUploadPort(*args, **kwargs):
             if upload_protocol.startswith("blackmagic"):
                 if IS_WINDOWS and port.startswith("COM") and len(port) > 4:
                     port = "\\\\.\\%s" % port
+                if IS_MACOS and port.startswith("/dev/cu.usbmodem") and port.endswith("1") and "Black Magic Probe" in item["description"]:
+                    return port
                 if "GDB" in item["description"]:
                     return port
             for hwid in board_hwids:
