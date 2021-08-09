@@ -185,6 +185,8 @@ def reveal_debug_port(env_debug_port, tool_name, tool_settings):
             if tool_name.startswith("blackmagic"):
                 if IS_WINDOWS and port.startswith("COM") and len(port) > 4:
                     port = "\\\\.\\%s" % port
+                if IS_MACOS and port.startswith("/dev/cu.usbmodem") and port.endswith("1") and "Black Magic Probe" in item["description"]:
+                    return port
                 if "GDB" in item["description"]:
                     return port
             for hwid in hwids:
